@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <div id="content">
+      <div id="table2">
+        <h2>Table1</h2>
+        <table id="tb1"></table>
+      </div>
+      <div id="table2">
+        <h2>Table2</h2>
+        <table id="tb2"></table>
+      </div>
+    </div>
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+      table td {
+        border: 1px solid;
+        padding: 5px 10px;
+      }
+      table thead td {
+        font-weight: bold;
+      }
+    </style>
+    <script type="text/javascript">
+      var data1 = [
+        {
+          Name: "Kartik Chauhan",
+          Skills: "Frontend Consultant",
+          Technology: "Angular",
+          TaxID: 11221,
+          City: "Varanasi",
+          CountryCode: 91,
+          Phone: 343423423,
+          Email: "cpandey@mckinsol.com",
+        },
+        {
+          Name: "Chandan Pandey",
+          Skills: "Frontend Consultant",
+          Technology: "Angular",
+          TaxID: 45566,
+          City: "Edison NJ",
+          CountryCode: 1,
+          Phone: 12345522,
+          Email: "panday@mckinsol.com",
+        },
+        {
+          Name: "Anurag Varshney",
+          Skills: "SAP Consultant",
+          Technology: "SAP S/4 Fashion",
+          TaxID: 12345,
+          City: "Edison NJ",
+          CountryCode: 1,
+          Phone: 7323190072,
+          Email: "avarshney@mckinsol.com",
+        },
+        {
+          Name: "Abhinav Asati",
+          Skills: "Frontend Consultant",
+          Technology: "Angular",
+          TaxID: 23456,
+          City: "Smbalpur",
+          CountryCode: 91,
+          Phone: 123455,
+          Email: "aasati@mckinsol.com",
+        },
+        {
+          Name: "Sukirti Mishra",
+          Skills: "Frontend Consultant",
+          Technology: "Angular",
+          TaxID: 34567,
+          City: "Chatarpur",
+          CountryCode: 91,
+          Phone: 34567,
+          Email: "smishra@mckinsol.com",
+        },
+      ];
+
+      var data2 = [
+        {
+          No: 1,
+        },
+        {
+          No: 2,
+        },
+        {
+          No: 3,
+        },
+        {
+          No: 4,
+        },
+        {
+          No: 5,
+        },
+      ];
+
+      var cols1 = data1.length > 0 ? Object.keys(data1[0]) : [];
+      var cols2 = data2.length > 0 ? Object.keys(data2[0]) : [];
+
+      function deployData() {
+        var tbdata1 = "",
+          tbdata2 = "";
+
+        tbdata1 += "<thead>";
+        for (let k = 0; k < cols1.length; k++) {
+          tbdata1 +=
+            "<td draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+            cols1[k] +
+            "</td>";
+        }
+        tbdata1 += "</thead>";
+        for (let j = 0; j < data1.length; j++) {
+          tbdata1 += "<tr>";
+          for (let x = 0; x < cols1.length; x++) {
+            tbdata1 += "<td>" + data1[j][cols1[x]] + "</td>";
+          }
+          tbdata1 += "</tr>";
+        }
+
+        tbdata2 += "<thead>";
+        for (let k = 0; k < cols2.length; k++) {
+          tbdata2 +=
+            "<td draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+            cols2[k] +
+            "</td>";
+        }
+        tbdata2 += "</thead>";
+        for (let j = 0; j < data2.length; j++) {
+          tbdata2 += "<tr>";
+          for (let x = 0; x < cols2.length; x++) {
+            tbdata2 += "<td>" + data2[j][cols2[x]] + "</td>";
+          }
+          tbdata2 += "</tr>";
+        }
+        document.getElementById("tb1").innerHTML = tbdata1;
+        document.getElementById("tb2").innerHTML = tbdata2;
+
+        field = "";
+      }
+
+      deployData();
+
+      function allowDrop(ev) {
+        ev.preventDefault();
+      }
+      function drag(e) {
+        field = e.target.innerHTML;
+      }
+      function drop(e) {
+        e.preventDefault();
+        let ind;
+        var dropField = e.target.innerHTML;
+        var index1 = cols1.indexOf(dropField);
+        var index2 = cols2.indexOf(dropField);
+        if (cols1.indexOf(field) > -1) {
+          /////// from table1
+          ind = cols1.indexOf(field);
+          cols1.splice(ind, 1);
+          if (cols1.indexOf(dropField) > -1) {
+            //////// to table1
+            if (ind < index1) {
+              cols1.splice(index1, 0, field);
+            } else {
+              cols1.splice(index1 + 1, 0, field);
+            }
+          } else {
+            cols2.splice(index2 + 1, 0, field); /////////// to table2
+          }
+        } else if (cols2.indexOf(field) > -1) {
+          ////////// from table2
+          ind = cols2.indexOf(field);
+          cols2.splice(ind, 1);
+          if (cols2.indexOf(dropField) > -1) {
+            //////to table2
+            if (ind < index2) {
+              cols2.splice(index2, 0, field);
+            } else {
+              cols2.splice(index2 + 1, 0, field);
+            }
+          } else {
+            cols1.splice(index1 + 1, 0, field); ///////// to table1
+          }
+        }
+        for (let i = 0; i < data2.length; i++) {
+          for (let j = 0; j < cols2.length; j++) {
+            if (data1[i][cols2[j]] !== undefined) {
+              data2[i][cols2[j]] = data1[i][cols2[j]];
+            } else {
+              data2[i][cols2[j]] = data2[i][cols2[j]];
+            }
+          }
+        }
+        for (let i = 0; i < data1.length; i++) {
+          for (let j = 0; j < cols1.length; j++) {
+            if (data1[i][cols1[j]] !== undefined) {
+              data1[i][cols1[j]] = data1[i][cols1[j]];
+            } else {
+              data1[i][cols1[j]] = data2[i][cols1[j]];
+            }
+          }
+        }
+        console.log("table1", data1);
+        console.log("table2", data2);
+        deployData();
+      }
+    </script>
+  </body>
+</html>
